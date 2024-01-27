@@ -1,2 +1,1 @@
-# cuinspace-payload-camera
-OpenCV project to analyze colour intensity of frogs 
+OpenCV Python Project to analyze color intensity of frogs 
