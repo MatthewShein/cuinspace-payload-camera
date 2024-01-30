@@ -3,7 +3,7 @@ import cv2
 
 print(cv2.__version__)
 
-cam = cv2.VideoCapture(0)
+cam = cv2.VideoCapture(1)
 
 cv2.namedWindow("Python Webcam App")
 
@@ -21,6 +21,8 @@ while True:
     hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
     lower_blue = np.array([90, 50, 50])
     upper_blue = np.array([130, 255, 255])
+    #lower_blue = np.array([189.88,100,50])
+    #upper_blue = np.array([107.29,100,255])
     
     mask = cv2.inRange(hsv, lower_blue, upper_blue)
 
