@@ -14,7 +14,7 @@ plt.ion()
 fig, ax = plt.subplots()
 line, = ax.plot(time_values, v_values)
 ax.set_xlabel('Time')
-ax.set_ylabel('Average V Value')
+ax.set_ylabel('Average V (Brightness) Value')
 
 while True:
     # Capture frame-by-frame
