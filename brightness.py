@@ -19,7 +19,7 @@ ax.set_ylabel('Average V (Brightness) Value')
 
 while True:
     # Capture frame-by-frame
-    ret, frame = cam.read()
+    ret, frame = cam.read() # read the camera feed, ret (true or false) and frame (the actual frame captured by the camera)
 
     if not ret:
         print("Failed to grab frame")
@@ -35,24 +35,25 @@ while True:
     # Create a mask for the blue color range
     mask = cv2.inRange(hsv, lower_blue, upper_blue)
 
-    # Extract the V component
+    # Extract the V component, hsv is a 3D array, the third dimension is the V component, so we can just extract it
+    # V of HSV (which stands for Value) works in conjunction with saturation and describes the brightness or intensity of the color, from 0 to 100 percent, where 0 is completely black, and 100 is the brightest and reveals the most color
     v_values_masked = hsv[:, :, 2][mask > 0]
 
-    # Calculate the average V value for masked regions
-    average_v_masked = np.mean(v_values_masked)
+    # Calculate the average brightness (V value) for masked regions
+    average_v_masked = np.mean(v_values_masked) 
 
-    # Track the average V value over time
+    # Track the average brightness value over time
     time_values.append(len(time_values) + 1)
     v_values.append(average_v_masked)
 
     # Update plot
     line.set_xdata(time_values)
     line.set_ydata(v_values)
-    ax.relim()
+    ax.relim() 
     ax.autoscale_view()
 
-    fig.canvas.draw()
-    fig.canvas.flush_events()
+    fig.canvas.draw() # draw the plot
+    fig.canvas.flush_events() # update the plot
     
     cv2.imshow("mask",mask)
     cv2.imshow("frame",frame)
@@ -64,5 +65,6 @@ while True:
         break
 
 # Release the camera and close all OpenCV windows
-cam.release()
-cv2.destroyAllWindows()
+cam.release() # release the camera
+cv2.destroyAllWindows() # close the camera window
+plt.close(fig) # close the plot
