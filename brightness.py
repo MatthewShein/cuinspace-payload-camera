@@ -1,5 +1,6 @@
 import cv2
 import numpy as np
+import time
 import matplotlib.pyplot as plt
 
 # Open the default camera
@@ -63,6 +64,13 @@ while True:
     # Break the loop if 'q' is pressed
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
+
+# Save the plot data to a file
+# Generate a timestamp for the filename
+timestamp = time.strftime("%Y%m%d%H%M%S")
+
+# Save the plot data to a new file with a timestamp in the filename
+np.savetxt(f'./brightness_data_{timestamp}.txt', np.column_stack((time_values, v_values)), delimiter=',', header='Time,Average V (Brightness) Value')
 
 # Release the camera and close all OpenCV windows
 cam.release() # release the camera
