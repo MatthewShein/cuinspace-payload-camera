@@ -3,6 +3,9 @@ import numpy as np
 import time
 import matplotlib.pyplot as plt
 
+#Raspberry Pi Camera Command
+# raspivid -t 0
+
 # Open the default camera
 # Setting to 1 fixes "Failed to grab frame" idfk why
 cam = cv2.VideoCapture(1)
