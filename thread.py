@@ -6,7 +6,7 @@ import threading
 #Raspberry Pi Camera Command
 # raspivid -t 0
 
-cam = cv2.VideoCapture(1)
+cam = cv2.VideoCapture(0)
 
 time_values = []
 v_values = []
