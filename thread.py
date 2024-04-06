@@ -6,24 +6,39 @@ import threading
 #Raspberry Pi Camera Command
 # raspivid -t 0
 
-cam = cv2.VideoCapture(0)
+cam = cv2.VideoCapture(1)
 
 time_values = []
 v_values = []
 
-counter = 0
-limit = 60
+csv_counter = 0
+csv_limit = 60
 
-def save_file():
-    global counter
-    if counter < limit:
-        threading.Timer(60.0, save_file).start()
+frame_counter = 0
+frame_limit = 3600
+
+def save_csv():
+    global csv_counter
+    if csv_counter < csv_limit:
+        threading.Timer(60.0, save_csv).start()
         timestamp = time.strftime("%Y-%m-%d_%H:%M:%S")
         print("Saving data to file " + timestamp)
         np.savetxt(f'./brightness_data_{timestamp}.csv', np.column_stack((time_values, v_values)), delimiter=',', header='Time,Average V (Brightness) Value')
-        counter += 1
-    
-save_file()
+        csv_counter += 1
+
+def save_frame():
+    global frame_counter
+    if frame_counter < frame_limit:
+        threading.Timer(1.0, save_frame).start()
+        timestamp = time.strftime("%Y-%m-%d_%H:%M:%S")
+        print("Saving frame to file " + timestamp)
+        ret, frame = cam.read() 
+        if ret:
+            cv2.imwrite(f'frame_{timestamp}.jpg', frame)  
+
+save_frame()
+#save_csv()
+
 while True:
     
     ret, frame = cam.read() 
