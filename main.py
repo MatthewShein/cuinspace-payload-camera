@@ -15,11 +15,11 @@ time_values = []
 v_values = []
 
 # Initialize plot
-plt.ion()
-fig, ax = plt.subplots()
-line, = ax.plot(time_values, v_values)
-ax.set_xlabel('Time')
-ax.set_ylabel('Average V (Brightness) Value')
+# plt.ion()
+# fig, ax = plt.subplots()
+# line, = ax.plot(time_values, v_values)
+# ax.set_xlabel('Time')
+# ax.set_ylabel('Average V (Brightness) Value')
 interval = 0.5
 
 while True:
@@ -28,9 +28,11 @@ while True:
     if not ret:
         print("Failed to grab frame")
         break
+   
     # Break the loop if 'q' is pressed
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
+
     # Wait for a few milliseconds before capturing the next frame (For Performance on PI)
     time.sleep(interval)
     # Convert frame to HSV
@@ -51,19 +53,26 @@ while True:
     average_v_masked = np.mean(v_values_masked) 
 
     # Track the average brightness value over time
+    
     time_values.append(len(time_values) + 1)
     v_values.append(average_v_masked)
 
+    if(len(time_values) % 69 == 0):
+        print("Saving data to file")
+        timestamp = time.strftime("%Y%m%d%H%M%S")
+        np.savetxt(f'./brightness_data_{timestamp}.csv', np.column_stack((time_values, v_values)), delimiter=',', header='Time,Average V (Brightness) Value')
+    elif(len(time_values) % 120 == 0):
+        break
     # Update plot
-    line.set_xdata(time_values)
-    line.set_ydata(v_values)
-    ax.relim() 
-    ax.autoscale_view()
+    # line.set_xdata(time_values)
+    # line.set_ydata(v_values)
+    # ax.relim() 
+    # ax.autoscale_view()
 
-    fig.canvas.draw() # draw the plot
-    fig.canvas.flush_events() # update the plot
+    # fig.canvas.draw() # draw the plot
+    # fig.canvas.flush_events() # update the plot
     
-    cv2.imshow("mask",mask)
+    # cv2.imshow("mask",mask)
     # cv2.imshow("frame",frame)
     # Display the masked frame (optional)
     # cv2.imshow('Masked Frame', result)
@@ -73,9 +82,9 @@ while True:
 timestamp = time.strftime("%Y%m%d%H%M%S")
 
 # Save the plot data to a new file with a timestamp in the filename
-np.savetxt(f'./brightness_data_{timestamp}.txt', np.column_stack((time_values, v_values)), delimiter=',', header='Time,Average V (Brightness) Value')
-
+np.savetxt(f'./brightness_data_{timestamp}.csv', np.column_stack((time_values, v_values)), delimiter=',', header='Time,Average V (Brightness) Value')
+print("Final Data saved to file, Goodbye!")
 # Release the camera and close all OpenCV windows
 cam.release() # release the camera
 cv2.destroyAllWindows() # close the camera window
-plt.close(fig) # close the plot
+# plt.close(fig) # close the plot
