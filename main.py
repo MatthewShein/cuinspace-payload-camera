@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 
 # Open the default camera
 # Setting to 1 fixes "Failed to grab frame" idfk why
-cam = cv2.VideoCapture(1)
+cam = cv2.VideoCapture(0)
 
 # Initialize lists to store time and average V values
 time_values = []
