@@ -20,15 +20,19 @@ fig, ax = plt.subplots()
 line, = ax.plot(time_values, v_values)
 ax.set_xlabel('Time')
 ax.set_ylabel('Average V (Brightness) Value')
+interval = 0.5
 
 while True:
     # Capture frame-by-frame
     ret, frame = cam.read() # read the camera feed, ret (true or false) and frame (the actual frame captured by the camera)
-
     if not ret:
         print("Failed to grab frame")
         break
-
+    # Break the loop if 'q' is pressed
+    if cv2.waitKey(1) & 0xFF == ord('q'):
+        break
+    # Wait for a few milliseconds before capturing the next frame (For Performance on PI)
+    time.sleep(interval)
     # Convert frame to HSV
     hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
 
@@ -60,13 +64,9 @@ while True:
     fig.canvas.flush_events() # update the plot
     
     cv2.imshow("mask",mask)
-    cv2.imshow("frame",frame)
+    # cv2.imshow("frame",frame)
     # Display the masked frame (optional)
     # cv2.imshow('Masked Frame', result)
-
-    # Break the loop if 'q' is pressed
-    if cv2.waitKey(1) & 0xFF == ord('q'):
-        break
 
 # Save the plot data to a file
 # Generate a timestamp for the filename
