@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 
 # Open the default camera
 # Setting to 1 fixes "Failed to grab frame" idfk why
-cam = cv2.VideoCapture(0)
+cam = cv2.VideoCapture(1)
 
 # Initialize lists to store time and average V values
 time_values = []
@@ -58,10 +58,10 @@ while True:
     v_values.append(average_v_masked)
 
     if(len(time_values) % 69 == 0):
-        print("Saving data to file")
+        print("Saving data to file" + str(len(time_values)))
         timestamp = time.strftime("%Y%m%d%H%M%S")
         np.savetxt(f'./brightness_data_{timestamp}.csv', np.column_stack((time_values, v_values)), delimiter=',', header='Time,Average V (Brightness) Value')
-    elif(len(time_values) % 120 == 0):
+    elif(len(time_values) == 3600):
         break
     # Update plot
     # line.set_xdata(time_values)
