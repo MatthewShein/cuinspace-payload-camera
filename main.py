@@ -20,7 +20,7 @@ v_values = []
 # line, = ax.plot(time_values, v_values)
 # ax.set_xlabel('Time')
 # ax.set_ylabel('Average V (Brightness) Value')
-interval = 0.5
+# interval = 0.5
 
 while True:
     # Capture frame-by-frame
@@ -34,7 +34,7 @@ while True:
         break
 
     # Wait for a few milliseconds before capturing the next frame (For Performance on PI)
-    time.sleep(interval)
+    # time.sleep(interval)
     # Convert frame to HSV
     hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
 
