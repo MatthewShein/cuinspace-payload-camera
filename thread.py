@@ -2,6 +2,7 @@ import cv2
 import numpy as np
 import time
 import threading
+import os
 
 #Raspberry Pi Camera Command
 # raspivid -t 0
@@ -24,17 +25,35 @@ def save_csv():
         timestamp = time.strftime("%Y-%m-%d_%H:%M:%S")
         print("Saving data to file " + timestamp)
         np.savetxt(f'./brightness_data_{timestamp}.csv', np.column_stack((time_values, v_values)), delimiter=',', header='Time,Average V (Brightness) Value')
+        os.fsync(open(f'./brightness_data_{timestamp}.csv', 'a'))  # Add fsync after saving
         csv_counter += 1
 
+# def save_frame():
+#     global frame_counter
+#     if frame_counter < frame_limit:
+#         threading.Timer(1.0, save_frame).start()
+#         timestamp = time.strftime("%Y-%m-%d_%H:%M:%S")
+#         print("Saving frame to file " + timestamp)
+#         ret, frame = cam.read() 
+#         if ret:
+#             cv2.imwrite(f'frame_{timestamp}.jpg', frame)  
+        
 def save_frame():
-    global frame_counter
-    if frame_counter < frame_limit:
-        threading.Timer(1.0, save_frame).start()
-        timestamp = time.strftime("%Y-%m-%d_%H:%M:%S")
-        print("Saving frame to file " + timestamp)
-        ret, frame = cam.read() 
-        if ret:
-            cv2.imwrite(f'frame_{timestamp}.jpg', frame)  
+  global frame_counter
+  if frame_counter < frame_limit:
+    threading.Timer(1.0, save_frame).start()
+    timestamp = time.strftime("%Y-%m-%d_%H:%M:%S")
+    print("Saving frame to file " + timestamp)
+    ret, frame = cam.read()
+    if ret:
+      try:
+        # Open the file in binary write mode
+        with open(f'frame_{timestamp}.jpg', 'wb') as f:
+          # Perform atomic write using fileno() and frame.tobytes()
+          os.atomic_write(f.fileno(), frame.tobytes())
+      except OSError as e:
+        print(f"Error during atomic write: {e}")
+      frame_counter += 1
 
 save_frame()
 #save_csv()
