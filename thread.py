@@ -95,10 +95,12 @@ def save_frame():
                     # Open the temporary file in binary write mode
                     with open(temp_filename, 'wb') as f:
                         f.write(image_data.tobytes())  # Write image data directly
-                        f.sync()  # Sync data to storage device (limited atomicity)
+                        fd = f.fileno()
+                        os.fsync(fd)
 
                     # Rename the temporary file to the final filename (atomic rename on some filesystems)
                     os.rename(temp_filename, os.path.join(directory, f'frame_{timestamp}.jpg'))
+
             except OSError as e:
                 print(f"Error during image saving: {e}")
             frame_counter += 1
