@@ -38,6 +38,38 @@ def save_csv():
 #         if ret:
 #             cv2.imwrite(f'frame_{timestamp}.jpg', frame)  
         
+# def save_frame():
+#     global frame_counter
+#     if frame_counter < frame_limit:
+#         threading.Timer(1.0, save_frame).start()
+#         timestamp = time.strftime("%Y-%m-%d_%H:%M:%S")
+#         print("Saving frame to file " + timestamp)
+#         ret, frame = cam.read()
+#         if ret:
+#             try:
+#                 # Specify the directory where the file will be saved
+#                 directory = "/home/payload/Desktop/Matt/cuinspace-payload-camera/frames"
+
+#                 # Create the directory if it doesn't exist
+#                 os.makedirs(directory, exist_ok=True)
+
+#                 # Create a temporary filename with proper extension (e.g., '.jpg')
+#                 temp_filename = os.path.join(directory, f'frame_{timestamp}.jpg.tmp')
+
+#                 # Encode image using cv2.imencode
+#                 ret2, image_data = cv2.imencode('.jpg', frame)
+#                 # Check for encoding success
+#                 if ret2:
+#                     # Open the temporary file in binary write mode
+#                     with open(temp_filename, 'wb') as f:
+#                         f.write(image_data.tobytes())  # Write image data directly
+
+#                     # Rename the temporary file to the final filename (atomic rename on some filesystems)
+#                     os.rename(temp_filename, os.path.join(directory, f'frame_{timestamp}.jpg'))
+#             except OSError as e:
+#                 print(f"Error during image saving: {e}")
+#             frame_counter += 1
+
 def save_frame():
     global frame_counter
     if frame_counter < frame_limit:
@@ -63,6 +95,7 @@ def save_frame():
                     # Open the temporary file in binary write mode
                     with open(temp_filename, 'wb') as f:
                         f.write(image_data.tobytes())  # Write image data directly
+                        f.sync()  # Sync data to storage device (limited atomicity)
 
                     # Rename the temporary file to the final filename (atomic rename on some filesystems)
                     os.rename(temp_filename, os.path.join(directory, f'frame_{timestamp}.jpg'))
