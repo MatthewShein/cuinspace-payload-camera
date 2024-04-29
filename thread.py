@@ -56,7 +56,7 @@ def save_frame():
       frame_counter += 1
 
 save_frame()
-#save_csv()
+save_csv()
 
 while True:
     
