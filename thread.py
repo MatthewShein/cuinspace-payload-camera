@@ -39,21 +39,25 @@ def save_csv():
 #             cv2.imwrite(f'frame_{timestamp}.jpg', frame)  
         
 def save_frame():
-  global frame_counter
-  if frame_counter < frame_limit:
-    threading.Timer(1.0, save_frame).start()
-    timestamp = time.strftime("%Y-%m-%d_%H:%M:%S")
-    print("Saving frame to file " + timestamp)
-    ret, frame = cam.read()
-    if ret:
-      try:
-        # Open the file in binary write mode
-        with open(f'frame_{timestamp}.jpg', 'wb') as f:
-          # Perform atomic write using fileno() and frame.tobytes()
-          os.atomic_write(f.fileno(), frame.tobytes())
-      except OSError as e:
-        print(f"Error during atomic write: {e}")
-      frame_counter += 1
+    global frame_counter
+    if frame_counter < frame_limit:
+        threading.Timer(1.0, save_frame).start()
+        timestamp = time.strftime("%Y-%m-%d_%H:%M:%S")
+        print("Saving frame to file " + timestamp)
+        ret, frame = cam.read()
+        if ret:
+            try:
+                # Specify the directory where the file will be saved
+                directory = "/home/payload/Desktop/Matt/cuinspace-payload-camera/frames"
+                # Create the directory if it does not exist
+                os.makedirs(directory, exist_ok=True)
+                # Open the file in binary write mode
+                with open(os.path.join(directory, f'frame_{timestamp}.jpg'), 'wb') as f:
+                    # Perform atomic write using fileno() and frame.tobytes()
+                    os.write(f.fileno(), frame.tobytes())
+            except OSError as e:
+                print(f"Error during atomic write: {e}")
+            frame_counter += 1
 
 save_frame()
 save_csv()
