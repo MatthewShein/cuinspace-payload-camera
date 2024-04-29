@@ -48,20 +48,26 @@ def save_frame():
         if ret:
             try:
                 # Specify the directory where the file will be saved
-                
+                directory = "/home/payload/Desktop/Matt/cuinspace-payload-camera/frames"
+
+                # Create the directory if it doesn't exist
+                os.makedirs(directory, exist_ok=True)
+
+                # Create a temporary filename with proper extension (e.g., '.jpg')
+                temp_filename = os.path.join(directory, f'frame_{timestamp}.jpg.tmp')
+
                 # Encode image using cv2.imencode
                 ret2, image_data = cv2.imencode('.jpg', frame)
-                # Create the directory if it does not exist
+                # Check for encoding success
                 if ret2:
-                    directory = "/home/payload/Desktop/Matt/cuinspace-payload-camera/frames"
-                    os.makedirs(directory, exist_ok=True)
-                    
-                    # Open the file in binary write mode
-                    with open(os.path.join(directory, f'frame_{timestamp}.jpg'), 'wb') as f:
-                        # Perform atomic write using fileno() and frame.tobytes()
-                        os.atomic_write(f.fileno(), image_data.tobytes())
+                    # Open the temporary file in binary write mode
+                    with open(temp_filename, 'wb') as f:
+                        f.write(image_data.tobytes())  # Write image data directly
+
+                    # Rename the temporary file to the final filename (atomic rename on some filesystems)
+                    os.rename(temp_filename, os.path.join(directory, f'frame_{timestamp}.jpg'))
             except OSError as e:
-                print(f"Error during atomic write: {e}")
+                print(f"Error during image saving: {e}")
             frame_counter += 1
 
 save_frame()
