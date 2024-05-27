@@ -3,18 +3,32 @@ import numpy as np
 import time
 import threading
 import os
+import RPi.GPIO as GPIO
+import keyboard
+
+# Set up GPIO
+GPIO.setmode(GPIO.BCM)
+GPIO.setup(18, GPIO.OUT)
+
+# Function to turn on the light
+def turn_on_light():
+    GPIO.output(18, GPIO.HIGH)
+    print("Light on")
+
+# Function to turn off the light
+def turn_off_light():
+    GPIO.output(18, GPIO.LOW)
+    print("Light off")
 
 #Raspberry Pi Camera Command
 # raspivid -t 0
-
+    
 cam = cv2.VideoCapture(1)
 
 time_values = []
 v_values = []
-
 csv_counter = 0
 csv_limit = 60
-
 frame_counter = 0
 frame_limit = 3600
 
@@ -27,48 +41,6 @@ def save_csv():
         np.savetxt(f'./brightness_data_{timestamp}.csv', np.column_stack((time_values, v_values)), delimiter=',', header='Time,Average V (Brightness) Value')
         os.fsync(open(f'./brightness_data_{timestamp}.csv', 'a'))  # Add fsync after saving
         csv_counter += 1
-
-# def save_frame():
-#     global frame_counter
-#     if frame_counter < frame_limit:
-#         threading.Timer(1.0, save_frame).start()
-#         timestamp = time.strftime("%Y-%m-%d_%H:%M:%S")
-#         print("Saving frame to file " + timestamp)
-#         ret, frame = cam.read() 
-#         if ret:
-#             cv2.imwrite(f'frame_{timestamp}.jpg', frame)  
-        
-# def save_frame():
-#     global frame_counter
-#     if frame_counter < frame_limit:
-#         threading.Timer(1.0, save_frame).start()
-#         timestamp = time.strftime("%Y-%m-%d_%H:%M:%S")
-#         print("Saving frame to file " + timestamp)
-#         ret, frame = cam.read()
-#         if ret:
-#             try:
-#                 # Specify the directory where the file will be saved
-#                 directory = "/home/payload/Desktop/Matt/cuinspace-payload-camera/frames"
-
-#                 # Create the directory if it doesn't exist
-#                 os.makedirs(directory, exist_ok=True)
-
-#                 # Create a temporary filename with proper extension (e.g., '.jpg')
-#                 temp_filename = os.path.join(directory, f'frame_{timestamp}.jpg.tmp')
-
-#                 # Encode image using cv2.imencode
-#                 ret2, image_data = cv2.imencode('.jpg', frame)
-#                 # Check for encoding success
-#                 if ret2:
-#                     # Open the temporary file in binary write mode
-#                     with open(temp_filename, 'wb') as f:
-#                         f.write(image_data.tobytes())  # Write image data directly
-
-#                     # Rename the temporary file to the final filename (atomic rename on some filesystems)
-#                     os.rename(temp_filename, os.path.join(directory, f'frame_{timestamp}.jpg'))
-#             except OSError as e:
-#                 print(f"Error during image saving: {e}")
-#             frame_counter += 1
 
 def save_frame():
     global frame_counter
@@ -105,11 +77,13 @@ def save_frame():
                 print(f"Error during image saving: {e}")
             frame_counter += 1
 
+turn_on_light()
 save_frame()
 save_csv()
 
 while True:
     
+
     ret, frame = cam.read() 
     if not ret:
         print("Failed to grab frame")
@@ -136,3 +110,5 @@ print("Final Data saved to file, Goodbye!")
 # Release the camera and close all OpenCV windows
 cam.release() # release the camera
 cv2.destroyAllWindows() # close the camera window
+turn_off_light()
+GPIO.cleanup()
