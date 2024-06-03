@@ -4,7 +4,7 @@ import time
 import threading
 import os
 import RPi.GPIO as GPIO
-import keyboard
+
 
 # Set up GPIO
 GPIO.setmode(GPIO.BCM)
