@@ -13,7 +13,7 @@ GPIO.setmode(GPIO.BCM)
 GPIO.setup(ledPin, GPIO.OUT)
 GPIO.output(ledPin, GPIO.LOW)
 
-camera = cv2.videoCapture(0)
+camera = cv2.VideoCapture(0)
 time_values = []
 brightness_values = []
 csv_counter = 0
