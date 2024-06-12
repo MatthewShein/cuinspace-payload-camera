@@ -43,7 +43,7 @@ def save_frame():
         if ret:
             try:
                 # Specify the directory where the file will be saved
-                directory = "/home/payload/Desktop/cuinspace-payload-camera/frames"
+                directory = "/home/payload/Desktop/Matt/cuinspace-payload-camera/frames"
 
                 # Create the directory if it doesn't exist
                 os.makedirs(directory, exist_ok=True)
