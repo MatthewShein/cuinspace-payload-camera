@@ -1,1 +1,1 @@
-OpenCV Python Project to analyze color intensity of frogs 
+OpenCV Python Project to analyze color intensity of frogs cells
