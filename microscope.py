@@ -17,16 +17,15 @@ camera = cv2.VideoCapture(0)
 time_values = []
 brightness_values = []
 csv_counter = 0
-csv_limit = 100
+csv_limit = 1200
 frame_counter = 0
 frame_limit = 9999
 
 def save_csv():
     global csv_counter
-    if len(brightness_values) < 1:
-        return
+    print(len(brightness_values))
     if csv_counter < csv_limit:
-        threading.Timer(60.0, save_csv).start()
+        threading.Timer(15.0, save_csv).start()
         timestamp = time.strftime("%Y-%m-%d_%H:%M:%S")
         print("Saving data to file " + timestamp)
         np.savetxt(f'./brightness_data_{timestamp}.csv', np.column_stack((time_values, brightness_values)), delimiter=',', header='Time,Average Brightness Value')
