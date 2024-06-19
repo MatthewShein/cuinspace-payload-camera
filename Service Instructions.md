@@ -3,6 +3,8 @@
 Managing a Camera Script Service with systemd on Raspbian
 This guide explains how to navigate to the systemd service directory, control (start, enable, stop, disable) a camera script service named camera_script.service.
 
+Prereq: check that camera is connected: `vcgencmd get_camera`
+
 1. Accessing the systemd Service Directory:
 
    Open a terminal window. You can do this by clicking on the terminal icon or searching for "terminal" in the applications menu.
